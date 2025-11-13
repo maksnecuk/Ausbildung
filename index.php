@@ -10,7 +10,7 @@ class Cat {
         echo "njom!";
     }
     public function makeASound() {
-        print_r ("Miau! <br />"); 
+        print_r ( $this->name.":Miau! <br />"); 
     }
 }
 
@@ -47,6 +47,8 @@ $catFelix2->color = "white";
 $catFelix2->age = "2017-05-10";
 $catFelix2->size = 70;
 $catFelix2->makeASound()
+
+
 
 
 ?>
