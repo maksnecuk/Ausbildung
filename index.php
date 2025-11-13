@@ -9,6 +9,9 @@ class Cat {
     public function eat() {
         echo "njom!";
     }
+    public function makeASound() {
+        print_r ("Miau! <br />"); 
+    }
 }
 
 $cat = new Cat();
@@ -26,6 +29,8 @@ var_dump($cat->name); */
 
 
 var_dump($cat) ;
-print_r($cat);
+print_r($cat,"<br />");
+$cat->makeASound();
+
 ?>
 </pre>
