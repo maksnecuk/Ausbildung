@@ -32,5 +32,22 @@ var_dump($cat) ;
 print_r($cat,"<br />");
 $cat->makeASound();
 
+
+$catFelix1 = new Cat();
+$catFelix1->name = "Felix der 1 ";
+$catFelix1->color = "black";
+$catFelix1->age = "2014-05-10";
+$catFelix1->size = 30;
+$catFelix1->makeASound();
+
+
+$catFelix2 = new Cat();
+$catFelix2->name = "Felix der 2";
+$catFelix2->color = "white";
+$catFelix2->age = "2017-05-10";
+$catFelix2->size = 70;
+$catFelix2->makeASound()
+
+
 ?>
 </pre>
