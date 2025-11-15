@@ -1,55 +1,81 @@
-<pre>
 <?php
 
+// ==========================================
+// Aufgabe 4, 6: Клас кота + makeASound() з ім'ям кота
+// ==========================================
 class Cat {
-    public $name;//String
-    public $color; //String "black", "white", "red", " tabby"
-	public $age; //date of birth e. g. "1997-11-21"
-	public $size; //from head to the beginning of tail in cm
+    public $name;   // String
+    public $color;  // String "black", "white", "red", "tabby"
+    public $age;    // Пр.: "2014-05-10"
+    public $size;   // В сантиметрах
+
     public function eat() {
         echo "njom!";
     }
+
+    // Aufgabe 4 + Aufgabe 6
     public function makeASound() {
-        print_r ( $this->name.":Miau! <br />"); 
+        echo  $this->name . ": meow!\n";
     }
 }
 
+// Початок <pre> для зручного виводу — Aufgabe 3
+echo "<pre>";
+
+
+// ==========================================
+// Aufgabe 2: Вивід властивостей (ім’я та розмір) через echo та var_dump
+// ==========================================
 $cat = new Cat();
 $cat->name = "Mrs. Treble";
 $cat->color = "rot";
 $cat->age = "2014-05-10";
-$cat->size = 60;
-/*echo "Name: $cat->name <br/> 
-Color: $cat->color<br/> 
-Age: $cat->age<br/> 
-Size: $cat->size<br/> "; 
-
-var_dump($cat->age);
-var_dump($cat->name); */
+$cat->size = 60;   // Без лапок — як вимагає задача
 
 
-var_dump($cat) ;
-print_r($cat,"<br />");
+echo "===== echo =====\n";
+echo $cat->name."\n";
+echo $cat->size."\n";
+
+echo "===var_dump()===\n";
+ var_dump($cat->name);
+ var_dump($cat->size);
+
+
+// ==========================================
+// Aufgabe 3: Вивести весь об’єкт трьома функціями
+// ==========================================
+echo "=== echo (не працює для об'єктів) ===\n";
+//echo $cat;  // дасть помилку/попередження
+
+echo "\n=== print_r() ===\n";
+print_r($cat);
+
+echo "\n=== var_dump() ===\n";
+var_dump($cat);
+
+
+// Виклик методу
 $cat->makeASound();
 
 
+// ==========================================
+// Aufgabe 5: Створити двох котів Felix 1 і Felix 2 та змусити їх нявкати
+// ==========================================
 $catFelix1 = new Cat();
-$catFelix1->name = "Felix der 1 ";
+$catFelix1->name = "Felix der 1.";
 $catFelix1->color = "black";
 $catFelix1->age = "2014-05-10";
 $catFelix1->size = 30;
 $catFelix1->makeASound();
 
-
 $catFelix2 = new Cat();
-$catFelix2->name = "Felix der 2";
+$catFelix2->name = "Felix der 2.";
 $catFelix2->color = "white";
 $catFelix2->age = "2017-05-10";
 $catFelix2->size = 70;
-$catFelix2->makeASound()
+$catFelix2->makeASound();
 
-
-
+echo "</pre>";
 
 ?>
-</pre>
