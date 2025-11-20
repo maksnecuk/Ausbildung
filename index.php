@@ -8,7 +8,9 @@ class Cat {
     public $color;  // String "black", "white", "red", "tabby"
     public $age;    // Пр.: "2014-05-10"
     public $size;   // В сантиметрах
-    public $isHungry ; // Boolean 
+    public $isHungry = true; // Boolean 
+
+    public $weight = 0.5; // in Kilograms
 
     public function eat() {
         echo "njom!";
