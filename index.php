@@ -48,6 +48,8 @@ echo $cat->size."\n";
 echo "===var_dump()===\n";
  var_dump($cat->name);
  var_dump($cat->size);
+ var_dump($cat->isHungry);
+ var_dump($cat->weight);
 
 
 // ==========================================
