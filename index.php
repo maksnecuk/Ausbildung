@@ -8,6 +8,7 @@ class Cat {
     public $color;  // String "black", "white", "red", "tabby"
     public $age;    // Пр.: "2014-05-10"
     public $size;   // В сантиметрах
+    public $isHungry ; // Boolean 
 
     public function eat() {
         echo "njom!";
@@ -15,12 +16,16 @@ class Cat {
 
     // Aufgabe 4 + Aufgabe 6
     public function makeASound() {
-        echo  $this->name . ": meow!\n";
+        if ($this->isHungry == true) {
+        echo  $this->name . ": MEOWW!\n";
+        }
+        else {
+            echo $this->name. "meow!\n";}
     }
 }
 
 // Початок <pre> для зручного виводу — Aufgabe 3
-echo "<pre>";
+//echo "<pre>";
 
 
 // ==========================================
@@ -31,6 +36,7 @@ $cat->name = "Mrs. Treble";
 $cat->color = "rot";
 $cat->age = "2014-05-10";
 $cat->size = 60;   // Без лапок — як вимагає задача
+$cat->isHungry = false;
 
 
 echo "===== echo =====\n";
@@ -67,14 +73,18 @@ $catFelix1->name = "Felix der 1.";
 $catFelix1->color = "black";
 $catFelix1->age = "2014-05-10";
 $catFelix1->size = 30;
+$catFelix1->isHungry = true;
 $catFelix1->makeASound();
+
 
 $catFelix2 = new Cat();
 $catFelix2->name = "Felix der 2.";
 $catFelix2->color = "white";
 $catFelix2->age = "2017-05-10";
 $catFelix2->size = 70;
+$catFelix2->isHungry = false;
 $catFelix2->makeASound();
+
 
 echo "</pre>";
 
