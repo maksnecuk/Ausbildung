@@ -1,85 +1,120 @@
 <?php
-//test2
 // ==========================================
-// Aufgabe 4, 6: Клас кота + makeASound() з ім'ям кота
+// Cat class with properties and behavior
 // ==========================================
 class Cat {
-    public $name;   // String
-    public $color;  // String "black", "white", "red", "tabby"
-    public $age;    // Пр.: "2014-05-10"
-    public $size;   // В сантиметрах
-    public $isHungry = true; // Boolean 
+    public $name;         // String: cat's name
+    public $color;        // String: cat's color
+    public $age;          // String: birthdate or age info
+    public $size;         // Integer: size in cm (must be without quotes)
+    public $isHungry; // Boolean: hunger state (default: hungry)
+    public $weight = 0.5;    // Float: default newborn weight in kg
 
-    public $weight = 0.5; // in Kilograms
+    public function __construct($name = "", $color = "", $age = "", $size = 0, $isHungry = true, $weight = 0.5) {
+        $this->name = $name;
+        $this->color = $color;
+        $this->age = $age;
+        $this->size = $size;
+        $this->isHungry = $isHungry;
+        $this->weight = $weight;
 
+    }
+
+    // Simple eating method
     public function eat() {
         echo "njom!";
     }
 
-    // Aufgabe 4 + Aufgabe 6
+    // Makes a sound depending on hunger state
     public function makeASound() {
-        if ($this->isHungry == true) {
-        echo  $this->name . ": MEOWW!\n";
+        if ($this->isHungry === true) {
+            // Loud meow if hungry
+            echo "[" . $this->name . "]: MEOOOW!!!". "<br>";
+        } else {
+            // Normal meow if not hungry; becomes hungry afterwards
+            echo "[" . $this->name . "]: meow!". "<br>";
+            $this->isHungry = true;
         }
-        else {
-            echo $this->name. "meow!\n";}
+    }
+    
+    // Prints full status of the cat
+    public function showStatus() {
+       $output = "";
+       $output .= "[".$this->name."]:<br/>"."Farbe:".$this->color."<br/>"."Age:".$this->age."<br/>"."Size:".$this->size."<br/>"."Gewicht:".$this->weight."kg<br/>";
+       if ($this->isHungry === true) {
+           $output .= "hungrig <br/>";
+       }
+       else{
+           $output .= "nicht hungrig <br/>";
+       }
+       return $output;
+
+
+        /* echo "<br>";
+        echo "[" . $this->name . "]";
+        echo "<br>";
+        echo "Farbe: " . $this->color;
+        echo "<br>";
+        echo "Age: ".$this->age;
+        echo "<br>"; 
+        echo "Size:". $this->size;
+        echo "<br>";
+        echo "Gewicht: " . $this->weight . " kg";
+        echo "<br>";
+        echo "isHungry: " . $this->isHungry;
+        echo "<br>";  */
     }
 }
 
-// Початок <pre> для зручного виводу — Aufgabe 3
-//echo "<pre>";
-
-
 // ==========================================
-// Aufgabe 2: Вивід властивостей (ім’я та розмір) через echo та var_dump
+// Aufgabe 2: Output properties using echo() and var_dump()
 // ==========================================
-$cat = new Cat();
+$cat = new Cat("","","",);
 $cat->name = "Mrs. Treble";
 $cat->color = "rot";
 $cat->age = "2014-05-10";
-$cat->size = 60;   // Без лапок — як вимагає задача
+$cat->size = 60;      // Must be without quotes
 $cat->isHungry = false;
 
+echo "===== echo =====". "<br>";
+echo $cat->name ."<br>";
+echo $cat->size ."<br>";
 
-echo "===== echo =====\n";
-echo $cat->name."\n";
-echo $cat->size."\n";
-
-echo "===var_dump()===\n";
- var_dump($cat->name);
- var_dump($cat->size);
- var_dump($cat->isHungry);
- var_dump($cat->weight);
+echo "=== var_dump() ==="."<br>";
+var_dump($cat->name."<br>");
+var_dump($cat->size);
+var_dump($cat->isHungry);
+var_dump($cat->weight);
 
 
 // ==========================================
-// Aufgabe 3: Вивести весь об’єкт трьома функціями
+// Aufgabe 3: Output entire object with echo/print_r/var_dump
 // ==========================================
-echo "=== echo (не працює для об'єктів) ===\n";
-//echo $cat;  // дасть помилку/попередження
+echo "\n=== echo (does not work for objects) ===\n". "<br>";
+// echo $cat; // would cause an error
 
-echo "\n=== print_r() ===\n";
-print_r($cat);
+echo "\n=== print_r() ===\n". "<br>";
+print_r($cat, )."<br>";
 
-echo "\n=== var_dump() ===\n";
-var_dump($cat);
+echo "\n=== var_dump() ===\n". "<br>";
+var_dump($cat,"<br>");
 
 
-// Виклик методу
+// Call the method to test sound
 $cat->makeASound();
 
 
 // ==========================================
-// Aufgabe 5: Створити двох котів Felix 1 і Felix 2 та змусити їх нявкати
+// Aufgabe 5: Create Felix 1 and Felix 2 and let them meow
 // ==========================================
 $catFelix1 = new Cat();
 $catFelix1->name = "Felix der 1.";
+$catFelix1->weight = 2.3;
 $catFelix1->color = "black";
 $catFelix1->age = "2014-05-10";
 $catFelix1->size = 30;
 $catFelix1->isHungry = true;
-$catFelix1->makeASound();
-
+//$catFelix1->makeASound();
 
 $catFelix2 = new Cat();
 $catFelix2->name = "Felix der 2.";
@@ -87,9 +122,17 @@ $catFelix2->color = "white";
 $catFelix2->age = "2017-05-10";
 $catFelix2->size = 70;
 $catFelix2->isHungry = false;
-$catFelix2->makeASound();
+//$catFelix2->makeASound();
 
 
+// ==========================================
+// Aufgabe 10: Show status of all properties
+// ==========================================
+echo "====== Aufgabe 10 ======". "<br>";
+echo $catFelix1->showStatus();
+echo $catFelix2->showStatus();
+echo"<Br/>";
+$aboba = new Cat("aboba", "braun", 3, 30, false, 0.5 );
+echo $aboba->showStatus();
 echo "</pre>";
-
 ?>
