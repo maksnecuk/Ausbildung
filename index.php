@@ -1,171 +1,213 @@
 <?php
-// ==========================================
-// Cat class with properties and behavior
-// ==========================================
 class Cat
 {
-    public $name;         // String: cat's name
-    public $color;        // String: cat's color
-    public $dOb;          // String: birthdate or age info
-    public $size;         // Integer: size in cm (must be without quotes)
-    public $isHungry; // Boolean: hunger state (default: hungry)
-    public $weight;    // Float: default newborn weight in kg
+    // Class properties
+    private $name;         // String: cat's name
+    private $color;        // String: cat's color
+    private $DoB;          // String: birthdate
+    private $size;         // Integer: size in cm
+    private $weight;       // Float: weight in kg
+    private $stomachAmount; // Current volume of food in the stomach
+    private $cubicAmount;   // Max stomach capacity
 
-    public function __construct($name = "", $color = "", $age = "", $size = 0, $isHungry = true, $weight = 0.5)
+    public function __construct($name = "", $color = "", $DoB = "", $size = 0, $weight = 0.5, $stomachAmount = 0)
     {
         $this->name = $name;
         $this->color = $color;
-        $this->age = $age;
+        $this->DoB = $DoB;
         $this->size = $size;
-        $this->isHungry = $isHungry;
         $this->weight = $weight;
 
+        // Randomize stomach size to make each cat unique (0.1 to 0.5 liters)
+        $this->cubicAmount = rand(1,5)/10;
+        $this->stomachAmount = $stomachAmount;
     }
-    // Makes a sound depending on hunger state
-    public function makeASound()
-    {
-        if ($this->isHungry === true)
+
+    // Handles vocalization based on the cat's state
+    private function makeASound(): void{
+        if ($this->getIsHungry() === true)
         {
-            // Loud meow if hungry
+            // Loud meow implies urgency
             echo "[" . $this->name . "]: MEOOOW!!!". "<br>";
         } else
         {
-            // Normal meow if not hungry; becomes hungry afterwards
+            // Happy/Normal meow
             echo "[" . $this->name . "]: meow!". "<br>";
-            $this->isHungry = true;
         }
-    }
-    
-    // Prints full status of the cat
-    public function showStatus()
-    {
-       $output = "";
-       $output .= "[".$this->name."]:<br/>"."Farbe:".$this->color."<br/>"."Date of birth:".$this->dOb."<br/>"."Size:".$this->size."<br/>"."Gewicht:".$this->weight."kg<br/>";
-       if ($this->isHungry === true)
-       {
-           $output .= "hungrig <br/>";
-       }
-       else
-       {
-           $output .= "nicht hungrig <br/>";
-       }
-       return $output;
     }
 
-    public function setWeight($weight)
-    {
-        if($weight> 0.1 )
+    // Displays the full current status of the cat
+    public function showStatus(){
+        $output = "";
+        $output .= "[".$this->name."]:<br/>"."Farbe:".$this->color."<br/>"."Date of birth:".$this->DoB."<br/>"."Size:".$this->size."<br/>"."Gewicht:".$this->weight."kg<br/>";
+
+        // check hunger status for output
+        if ($this->getIsHungry() === true)
         {
-            $this->weight = $weight;
+            $output .= "hungrig <br/>";
         }
-        else {
-            trigger_error("du hast falsche Wert bei der Eigenschaft Gewicht des Object  ".$this->name." zu gewiesen. Die Wert wurde auf kleinste Wert aufgesetzt");
-            $this->weight = 0.1;
+        else
+        {
+            $output .= "nicht hungrig <br/>";
+        }
+        return $output;
+    }
+
+    // Internal method to process eating.
+    // Calculates the real amount eaten based on limits.
+    private function eat(CatBowl $bowl,$quantity):void{
+        $foodInBowl = $bowl->getQuantity();
+        $freeSpaceInTheCat = $this->cubicAmount-$this->stomachAmount;
+
+        // Logic: Cat eats the minimum of what is requested, what is in the bowl, or what fits in the stomach.
+        $realEatenAmount = min($quantity, $foodInBowl, $freeSpaceInTheCat);
+
+        // Update cat's state
+        $this->weight=$this->getWeight()+$realEatenAmount;
+        $this->stomachAmount +=$realEatenAmount;
+
+        // Remove food from the bowl
+        $bowl->toEmpty($realEatenAmount);
+    }
+
+    // Interaction method: Cat tries to play with another cat
+    public function play(Cat $fellow):void{
+        // 1. Check if too full
+        if($this->getLevel()===100){
+            echo "No, thank you, I'd rather sleep.";
+            $this->sleep();
+        }
+        // 2. Check if too hungry
+        elseif ($this->getIsHungry() === true){
+            echo "I don't want to play. I want eat!";
+        }
+        // 3. Play and burn energy
+        else{
+            // Burning random 30-60% of stomach content
+            $percent = rand(30, 60);
+            $lostFood = ($this->stomachAmount * $percent) / 100;
+            $this->energyConsumption($lostFood);
         }
     }
-    public function eat()
-    {
-        if ($this->isHungry === true)
-        {
-            $this->isHungry = false;
-            echo "[".$this->name."]:"." jetzt bin ich satt";
+
+    // Internal sleep logic
+    private function sleep():void{
+        // Hungry cats can't sleep
+        if($this->getIsHungry() === true){
+            $this->makeASound();
         }
         else{
-            echo "[".$this->name."]:"." ich bin noch satt";
+            // Sleeping burns less energy (10-30%)
+            $percent = rand(10, 30);
+            $lostFood = ($this->stomachAmount * $percent) / 100;
+            $this->energyConsumption($lostFood);
         }
     }
 
-    public function play(){
-        echo "mir ist es langweilig, lass uns spielen !";
+    // Toilet logic
+    private function defecate():void{
+        // Cat won't go if stomach is almost empty
+        if($this->getLevel()<=10){
+            echo "I don't want to go to the toilet";
+        }
+        else{
+            // Going to toilet reduces stomach content significantly
+            $lostFood = ($this->stomachAmount * 4) / 100;
+            $this->energyConsumption($lostFood);
+        }
     }
 
-    public function sleep(){
-        echo "ich will schlaffen";
+    // Returns true if stomach is less than 20% full
+    public function getIsHungry():bool{
+        return $this->getLevel()<20;
     }
 
-    public function defecate(){
-        echo "jetzt muss ich auf Klo";
+    // --- Getters and Setters ---
+
+    public function setName(string $name):void{
+        $this->name = $name;
+    }
+
+    public function getName(): string{
+        return $this->name;
+    }
+
+    public function getColor(): string{
+        return $this->color;
+    }
+
+    public function getWeight():float{
+        return $this->weight;
+    }
+    public function getSize():float{
+        return $this->size;
+    }
+
+    public function getDoB():string{
+        return $this->DoB;
+    }
+
+    // Helper to calculate stomach fullness in %
+    private function getLevel():int{
+        return $this->stomachAmount/$this->cubicAmount*100;
+    }
+
+    // Centralized method to handle weight/food reduction to avoid code duplication
+    private function energyConsumption($value):void{
+        $this->stomachAmount-=$value;
+        $this->weight -=$value;
+
+        // Safety check: stomach cannot be negative
+        if($this->stomachAmount<=0){
+            $this->stomachAmount=0;
+            trigger_error("The value cannot be less than zero.");
+        }
+
+        // Safety check: minimum weight threshold
+        if ($this->weight<=0.1){
+            $this->weight=0.1;
+            trigger_error("The value must be at least 0.1. If it's less than that, the cat dies.");
+        }
     }
 }
 
 class CatBowl{
-    const cubicCapacity = 1; //capacity in liter
+    private $cubicAmount;   // Current food amount
+    private $cubicCapacity; // Max capacity in liters
 
-    public function getLevel()
-    {
-        
+    public function __construct(float $cubicAmount = 0, float $cubicCapacity = 0.3){
+        $this->cubicAmount = $cubicAmount;
+        $this->cubicCapacity = $cubicCapacity;
     }
 
+    // Returns fullness percentage
+    public function getLevel():int {
+        return $this->cubicAmount/$this->cubicCapacity*100;
+    }
+
+    // Refills the bowl. Checks for overflow.
+    public function refill($quantity){
+        $this->cubicAmount+=$quantity;
+        if($this->cubicCapacity<$this->cubicAmount){
+            $this->cubicAmount=$this->cubicCapacity;
+            trigger_error("The bowl was overflowing, with excess spilling over the edge. The current amount of food left in the bowl is:".$this->cubicAmount);
+        }
+    }
+
+    public function getQuantity(): float
+    {
+        return $this->cubicAmount;
+    }
+
+    // Removes food from the bowl (e.g. when cat eats)
+    public function toEmpty($quantity):void{
+        $this->cubicAmount-=$quantity;
+        // Basic validation
+        if($this->cubicAmount<0){
+            $this->cubicAmount=0;
+            trigger_error("The value cannot be less than zero.");
+        }
+    }
 }
-// ==========================================
-// Aufgabe 2: Output properties using echo() and var_dump()
-// ==========================================
-$cat = new Cat();
-$cat->name = "Mrs. Treble";
-$cat->color = "rot";
-$cat->dOb = "2014-05-10";
-$cat->size = 60;      // Must be without quotes
-
-
-//echo "===== echo =====". "<br>";
-//echo $cat->name ."<br>";
-//echo $cat->size ."<br>";
-
-//echo "=== var_dump() ==="."<br>";
-//var_dump($cat->name."<br>");
-//var_dump($cat->size);
-//var_dump($cat->isHungry);
-//var_dump($cat->weight);
-
-
-// ==========================================
-// Aufgabe 3: Output entire object with echo/print_r/var_dump
-// ==========================================
-//echo "\n=== echo (does not work for objects) ===\n". "<br>";
-// echo $cat; // would cause an error
-
-//echo "\n=== print_r() ===\n". "<br>";
-//print_r($cat)."<br>";
-
-//echo "\n=== var_dump() ===\n". "<br>";
-//var_dump($cat,"<br>");
-
-
-// Call the method to test sound
-//$cat->makeASound();
-
-
-// ==========================================
-// Aufgabe 5: Create Felix 1 and Felix 2 and let them meow
-// ==========================================
-$catFelix1 = new Cat();
-$catFelix1->name = "Felix der 1.";
-$catFelix1->setWeight(2);
-$catFelix1->color = "black";
-$catFelix1->dOb = "2014-05-10";
-$catFelix1->size = 30;
-$catFelix1->isHungry = true;
-//$catFelix1->makeASound();
-
-$catFelix2 = new Cat();
-$catFelix2->name = "Felix der 2.";
-$catFelix2->color = "white";
-$catFelix2->dOb = "2017-05-10";
-$catFelix2->size = 70;
-$catFelix2->isHungry = false;
-$catFelix2->setWeight(0.6);
-//$catFelix2->makeASound();
-
-
-// ==========================================
-// Aufgabe 10: Show status of all properties
-// ==========================================
-echo "====== Aufgabe 10 ======". "<br>";
-echo $catFelix1->showStatus();
-echo $catFelix2->showStatus();
-
-$catFelix1->eat();
-echo"<br/>";
-echo $catFelix1->showStatus();
 echo "</pre>";
 ?>
